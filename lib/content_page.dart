@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_getx_app/recent_contest.dart';
 import 'package:get/get.dart';
 
 import 'my_detail_page.dart';
@@ -163,7 +164,14 @@ class _ContentPageState extends State<ContentPage> {
                     final jsonData = info[i];
                     return GestureDetector(
                       onTap: () {
-                        Get.toNamed("/detail/");
+                        Get.toNamed("/detail/", arguments: {
+                          "title": jsonData["title"],
+                          "text": jsonData["text"],
+                          "name": jsonData["name"],
+                          "img": jsonData["img"],
+                          "time": jsonData["time"],
+                          "prize": jsonData["prize"],
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 20, top: 20),
@@ -259,7 +267,15 @@ class _ContentPageState extends State<ContentPage> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Color(0xFFfdc33c)),
-                    child: GestureDetector(),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => const RecentContest());
+                      },
+                      child: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white,
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -274,8 +290,9 @@ class _ContentPageState extends State<ContentPage> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  itemCount: 4,
+                  itemCount: list.length,
                   itemBuilder: (_, i) {
+                    final recentData = list[i];
                     return Container(
                       width: width,
                       height: 100,
@@ -289,32 +306,35 @@ class _ContentPageState extends State<ContentPage> {
                         padding: const EdgeInsets.only(left: 20, right: 20),
                         child: Row(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 40,
-                              backgroundImage: AssetImage("img/background.jpg"),
+                              backgroundImage: AssetImage(
+                                recentData["img"],
+                                // "img/background.jpg",
+                              ),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
-                            const Column(
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Status",
-                                  style: TextStyle(
-                                      color: Color(0xFFfdebb2),
-                                      fontSize: 12,
+                                  recentData["status"],
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 201, 167, 54),
+                                      fontSize: 16,
                                       decoration: TextDecoration.none),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
                                 SizedBox(
                                   width: 170,
                                   child: Text(
-                                    "Text",
-                                    style: TextStyle(
+                                    recentData["text"],
+                                    style: const TextStyle(
                                         color: Color(0xFF3b3f42),
                                         fontSize: 18,
                                         decoration: TextDecoration.none),

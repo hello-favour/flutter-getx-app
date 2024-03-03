@@ -15,6 +15,22 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  List imgs = [];
+
+  _readData() async {
+    await DefaultAssetBundle.of(context).loadString("json/img.json").then((s) {
+      setState(() {
+        imgs = jsonDecode(s);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _readData();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -49,28 +65,31 @@ class _DetailPageState extends State<DetailPage> {
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 40,
-                        backgroundImage: AssetImage("img/background.jpg"),
+                        backgroundImage: AssetImage(
+                          Get.arguments!["img"],
+                          //"img/background.jpg",
+                        ),
                       ),
                       const SizedBox(
                         width: 10,
                       ),
-                      const Column(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "name",
-                            style: TextStyle(
+                            Get.arguments["name"].toString(),
+                            style: const TextStyle(
                                 color: Color(0xFF3b3f42),
                                 fontSize: 18,
                                 decoration: TextDecoration.none),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          Text(
+                          const Text(
                             "Top Level",
                             style: TextStyle(
                                 color: Color(0xFFfdebb2),
@@ -137,10 +156,10 @@ class _DetailPageState extends State<DetailPage> {
                       Container(
                           child: Row(
                         children: [
-                          const Text(
-                            "Title",
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.w500),
+                          Text(
+                            Get.arguments["title"].toString(),
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w500),
                           ),
                           Expanded(child: Container())
                         ],
@@ -148,10 +167,10 @@ class _DetailPageState extends State<DetailPage> {
                       const SizedBox(height: 20),
                       Container(
                         width: width,
-                        child: const Text(
-                          "Text",
-                          style:
-                              TextStyle(fontSize: 20, color: Color(0xFFb8b8b8)),
+                        child: Text(
+                          Get.arguments!["text"].toString(),
+                          style: const TextStyle(
+                              fontSize: 18, color: Color(0xFFb8b8b8)),
                         ),
                       ),
                       const SizedBox(
@@ -163,14 +182,15 @@ class _DetailPageState extends State<DetailPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.watch_later, color: Color(0xFF69c5df)),
-                              SizedBox(
+                              const Icon(Icons.watch_later,
+                                  color: Color(0xFF69c5df)),
+                              const SizedBox(
                                 width: 5,
                               ),
                               Column(
@@ -178,13 +198,13 @@ class _DetailPageState extends State<DetailPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "name",
-                                    style: TextStyle(
+                                    Get.arguments!["name"].toString(),
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         color: Color(0xFF303030),
                                         fontWeight: FontWeight.w700),
                                   ),
-                                  Text(
+                                  const Text(
                                     "Deadline",
                                     style: TextStyle(
                                         fontSize: 18, color: Color(0xFFacacac)),
@@ -196,9 +216,9 @@ class _DetailPageState extends State<DetailPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.monetization_on,
+                              const Icon(Icons.monetization_on,
                                   color: Color(0xFFfb8483)),
-                              SizedBox(
+                              const SizedBox(
                                 width: 5,
                               ),
                               Column(
@@ -206,13 +226,13 @@ class _DetailPageState extends State<DetailPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "499",
-                                    style: TextStyle(
+                                    Get.arguments!["prize"].toString(),
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         color: Color(0xFF303030),
                                         fontWeight: FontWeight.w700),
                                   ),
-                                  Text(
+                                  const Text(
                                     "Prize",
                                     style: TextStyle(
                                         fontSize: 18, color: Color(0xFFacacac)),
@@ -221,7 +241,7 @@ class _DetailPageState extends State<DetailPage> {
                               )
                             ],
                           ),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Icon(Icons.star, color: Color(0xFFfbc33e)),
@@ -275,7 +295,7 @@ class _DetailPageState extends State<DetailPage> {
                 )),
             //images
             Stack(children: [
-              for (int i = 0; i < 5; i++)
+              for (int i = 0; i < imgs.length; i++)
                 Positioned(
                   top: 590,
                   left: (20 + i * 35).toDouble(),
@@ -283,10 +303,14 @@ class _DetailPageState extends State<DetailPage> {
                   height: 50,
                   child: Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        image: const DecorationImage(
-                            image: AssetImage("img/background.jpg"),
-                            fit: BoxFit.cover)),
+                      borderRadius: BorderRadius.circular(25),
+                      image: DecorationImage(
+                          image: AssetImage(
+                            imgs[i]["img"].toString(),
+                            //"img/background.jpg",
+                          ),
+                          fit: BoxFit.cover),
+                    ),
                   ),
                 )
             ]),
